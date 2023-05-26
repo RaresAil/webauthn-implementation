@@ -22,7 +22,6 @@ export class AuthService {
           displayName: displayName,
         },
         pubKeyCredParams: [],
-        // excludeCredentials: registeredCredentials(),
         authenticatorSelection: {
           userVerification: 'preferred',
         },
