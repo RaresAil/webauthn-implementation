@@ -14,6 +14,7 @@ export default class App extends React.PureComponent {
     supported: false,
     registerDisplayName: "",
     registerEmail: "",
+    loginEmail: "",
   };
 
   componentDidMount(): void {
@@ -56,8 +57,23 @@ export default class App extends React.PureComponent {
             </button>
           </div>
           <div className="group">
-            <button onClick={this.login} type="button">
+            <button onClick={this.login()} type="button">
               Login
+            </button>
+          </div>
+          <div className="group">
+            <input
+              onChange={({ target }) => {
+                this.setState({
+                  loginEmail: target.value,
+                });
+              }}
+              placeholder="Email"
+              type="email"
+              value={this.state.loginEmail}
+            />
+            <button onClick={this.login(this.state.loginEmail)} type="button">
+              Login with YubiKey
             </button>
           </div>
         </div>
@@ -111,8 +127,22 @@ export default class App extends React.PureComponent {
     }
   };
 
-  private login = async () => {
+  private login = (email?: string) => async () => {
+    let extraData = {};
+
+    if (email) {
+      extraData = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      };
+    }
+
     const request = await fetch("/auth/request-login", {
+      ...extraData,
       method: "POST",
     });
 

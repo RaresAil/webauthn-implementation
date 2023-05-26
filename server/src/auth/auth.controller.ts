@@ -17,6 +17,7 @@ import { Register } from './interface/Register.dto';
 import { Login } from './interface/Login.dto';
 import { AuthService } from './auth.service';
 import { AbortRegister } from './interface/AbortRegister.dto';
+import { RequestLogin } from './interface/RequestLogin.dto';
 
 @Controller({
   path: 'auth',
@@ -55,8 +56,10 @@ export class AuthController {
   }
 
   @Post('/request-login')
-  async requestLogin(): Promise<CredentialRequestOptionsJSON> {
-    return this.service.requestLogin();
+  async requestLogin(
+    @Body() body: RequestLogin,
+  ): Promise<CredentialRequestOptionsJSON> {
+    return this.service.requestLogin(body.email);
   }
 
   @Post('/login')

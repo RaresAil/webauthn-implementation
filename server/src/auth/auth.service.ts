@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import {
   CredentialCreationOptionsJSON,
   CredentialRequestOptionsJSON,
+  PublicKeyCredentialDescriptorJSON,
 } from '@github/webauthn-json';
 
 import { Keys } from '@schemas/Keys.schema';
@@ -63,12 +64,42 @@ export class AuthService {
     };
   }
 
-  async requestLogin(): Promise<CredentialRequestOptionsJSON> {
+  async requestLogin(email?: string): Promise<CredentialRequestOptionsJSON> {
     const challenge = randomBytes(32).toString('base64url');
+    let allowCredentials: PublicKeyCredentialDescriptorJSON[] = [];
+    let userId = undefined;
+
+    if (email) {
+      userId = makeUUID(email);
+
+      const userKeys = (
+        await this.keysModel.find(
+          {
+            userId,
+            keyId: {
+              $exists: true,
+            },
+          },
+          {
+            keyId: 1,
+            type: 1,
+          },
+        )
+      ).map((rawValue) => {
+        const value = rawValue.toJSON();
+        return {
+          id: value.keyId,
+          type: value.type,
+        } as PublicKeyCredentialDescriptorJSON;
+      });
+
+      allowCredentials = userKeys;
+    }
 
     await this.sessionsModel.create({
       challenge,
       expireAt: this.getDelayedDate(5),
+      ...(userId ? { userId } : {}),
     });
 
     return {
@@ -76,6 +107,7 @@ export class AuthService {
         challenge: challenge,
         rpId: process.env.RP_ID,
         userVerification: 'preferred',
+        allowCredentials,
         timeout: this.minutesToMilliseconds(5),
       },
     };
@@ -103,18 +135,20 @@ export class AuthService {
     keyId: string,
     userId: string,
   ): Promise<LoginResponse> {
-    const existing = await this.sessionsModel.findOne({
-      challenge,
-    });
+    const existing = (
+      await this.sessionsModel.findOne({
+        challenge,
+      })
+    )?.toJSON();
 
-    if (!existing) {
+    if (!existing || !(userId || existing.userId)) {
       throw new UnauthorizedException();
     }
 
     const existingUser = (
       await this.keysModel.findOne({
         keyId,
-        userId,
+        userId: userId || existing.userId,
       })
     )?.toJSON();
 

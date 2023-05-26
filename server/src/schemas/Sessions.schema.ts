@@ -9,7 +9,10 @@ export class Sessions {
   challenge: string;
 
   @Prop({ required: false })
-  expireAt: Date;
+  userId?: string;
+
+  @Prop({ required: false })
+  expireAt?: Date;
 }
 
 export const SessionsSchema = SchemaFactory.createForClass(Sessions);

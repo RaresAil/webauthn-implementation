@@ -10,6 +10,5 @@ export class Login {
   data: string;
 
   @IsString()
-  @MinLength(5)
   user: string;
 }
