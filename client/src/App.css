@@ -10,6 +10,13 @@
   gap: 20px;
 }
 
+.buttons .group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .buttons button {
   width: 200px;
   height: 60px;

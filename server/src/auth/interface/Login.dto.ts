@@ -1,6 +1,6 @@
 import { IsString, MinLength } from 'class-validator';
 
-export class Register {
+export class Login {
   @IsString()
   @MinLength(5)
   id: string;
@@ -10,6 +10,6 @@ export class Register {
   data: string;
 
   @IsString()
-  @MinLength(1)
-  type: string;
+  @MinLength(5)
+  user: string;
 }

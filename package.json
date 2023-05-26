@@ -5,7 +5,9 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
+    "start:server": "cd server && yarn start",
     "start:client": "cd client && yarn start",
-    "build:client": "cd client && yarn build"
+    "build:client": "cd client && yarn build",
+    "build:server": "cd server && yarn build"
   }
 }
