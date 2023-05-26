@@ -1,0 +1,11 @@
+{
+  "name": "webauth-poc",
+  "version": "1.0.0",
+  "repository": "git@github.com:RaresAil/webauth-poc.git",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "start:client": "cd client && yarn start",
+    "build:client": "cd client && yarn build"
+  }
+}

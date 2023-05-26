@@ -1,0 +1,18 @@
+.App {
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 20px;
+}
+
+.buttons button {
+  width: 200px;
+  height: 60px;
+  font-size: 18px;
+  width: 100%;
+}
